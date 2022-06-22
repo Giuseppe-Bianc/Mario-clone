@@ -1,8 +1,15 @@
 package jade;
 
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 public class Window {
 	private int width, height;
 	private String title;
+	private long glfwWindow;
 
 	private static Window window = null;
 
@@ -24,11 +31,38 @@ public class Window {
 		loop();
 	}
 
-	private void loop() {
-		//
+	private void init() {
+		GLFWErrorCallback.createPrint(System.err).set();
+		if(!glfwInit()){
+			throw new IllegalStateException("unable to initialize GLFW");
+		}
+		glfwDefaultWindowHints();
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+
+		glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
+		if (glfwWindow == NULL) {
+			throw new IllegalStateException("Failed to create the GLFW window.");
+		}
+
+		glfwMakeContextCurrent(glfwWindow);
+		glfwSwapInterval(1);
+
+		glfwShowWindow(glfwWindow);
+
+		GL.createCapabilities();
+
 	}
 
-	private void init() {
-		//
+	private void loop() {
+		while (!glfwWindowShouldClose(glfwWindow)) {
+			glfwPollEvents();
+
+			glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			glfwSwapBuffers(glfwWindow);
+		}
 	}
 }
