@@ -11,25 +11,23 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-	private int width, height;
-	private String title;
+	private final int width, height;
+	private final String title;
 	private long glfwWindow;
 
 	public float r, g, b, a;
-	private boolean fadeToBlack = false;
 
 	private static Window window = null;
-
-	private static int currentSceneIndex = -1;
+	//private static int currentSceneIndex = -1;
 	private static Scene currentScene;
 
-	public static void changeScene(int newScene){
-		switch (newScene){
-			case 0 ->{
+	public static void changeScene(int newScene) {
+		switch (newScene) {
+			case 0 -> {
 				currentScene = new LevelEditorScene();
 				currentScene.init();
 			}
-			case 1 ->{
+			case 1 -> {
 				currentScene = new LevelScene();
 				currentScene.init();
 			}
@@ -43,17 +41,17 @@ public class Window {
 		this.width = 1120;
 		this.height = 595;
 		this.title = "Mario";
-		r = g = b = a =1;
+		r = g = b = a = 1;
 	}
 
-	public static Window get(){
-		if (Window.window == null){
+	public static Window get() {
+		if (Window.window == null)
 			Window.window = new Window();
-		}
+
 		return Window.window;
 	}
 
-	public void run(){
+	public void run() {
 		init();
 		loop();
 		glfwFreeCallbacks(glfwWindow);
@@ -65,7 +63,7 @@ public class Window {
 
 	public void init() {
 		GLFWErrorCallback.createPrint(System.err).set();
-		if(!glfwInit()){
+		if (!glfwInit()) {
 			throw new IllegalStateException("unable to initialize GLFW");
 		}
 		glfwDefaultWindowHints();
@@ -73,7 +71,7 @@ public class Window {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
-		glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
+		glfwWindow = glfwCreateWindow(this.width, this.height, title, NULL, NULL);
 		if (glfwWindow == NULL) {
 			throw new IllegalStateException("Failed to create the GLFW window.");
 		}
@@ -94,7 +92,7 @@ public class Window {
 	}
 
 	public void loop() {
-		float beginTime = Time.getTime(),endTime, dt = -1.0f;
+		float beginTime = Time.getTime(), endTime, dt = -1.0f;
 
 		while (!glfwWindowShouldClose(glfwWindow)) {
 			glfwPollEvents();
@@ -102,9 +100,7 @@ public class Window {
 			glClearColor(r, g, b, a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			if (dt >= 0) {
-				currentScene.update(dt);
-			}
+			if (dt >= 0) currentScene.update(dt);
 
 			glfwSwapBuffers(glfwWindow);
 
